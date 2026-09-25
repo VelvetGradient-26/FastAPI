@@ -1,208 +1,136 @@
 # FastAPI Masterclass
 
-Welcome to FastAPI Masterclass! This repository contains the course materials for the video course including all projects and slide decks.
+My working repository for the FastAPI Masterclass course. It holds the main course project, follow-up sections built on it, and a few small standalone practice APIs. Each subproject is self-contained, with its own `pyproject.toml`, `uv.lock` and virtual environment.
 
-## Downloading the Course Materials
+## Repository Layout
 
-### Option A: Clone repository with Git
-
-In Terminal/PowerShell, navigate to the directory where you'd like to download the `fast-api-masterclass` course materials.
-
-Execute `git clone git@github.com:paskhaver/fast-api-masterclass.git` to clone the repository to your computer.
-
-### Option B: Download repository
-
-On this GitHub page, click the green `Code` button, then select "Download ZIP". Unpack the zip and move the `fast-api-masterclass` directory to wherever you'd like.
-
-## Course Prerequisites
-
-I recommend having a solid understanding of the following technical topics before progressing through the course:
-
-- Basic/intermediate Python (functions, classes/objects, data structures like list/dictionaries, etc.)
-- Terminal/command-line (navigation)
-- Git
-
-Don't worry about checking every item on the checklist. Developers learn topics in different orders. With that said, if you've never written a Python program before, it's best to complete a dedicated Python course first before progressing through this one.
-
-This course assumes no previous experience with backend development.
-
-This course uses the [VSCode](https://code.visualstudio.com/) editor and multiple VSCode extensions. You are welcome to utilize another editor (i.e. PyCharm) if you prefer. The code will remain the same, but you'll have to figure out how to achieve similar editor actions like debugging in your editor.
-
-## Browser Setup
-
-FastAPI uses the JSON text format to send and receive data.
-
-I recommend installing the Chrome `JSONVue` extension (or a similar tool) to format your JSON. See this page:
-
-https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?hl=en
-
-Without the extension, the browser will render raw JSON like this:
-
-```text
-{"id":1,"name":"Alice"}
+```
+fast-api-masterclass/
+├── 1_rent-a-room/            # Main course project (sections 1-10)
+├── 2_authentication/         # Authentication section (in progress)
+├── 3_database-management/    # Database migrations with Alembic (in progress)
+├── 4_other_projects/         # Standalone practice APIs
+│   ├── BurgerPoint/
+│   ├── PincodeLookup/
+│   └── TheatreReviews/
+└── slide-decks/              # Course slide PDFs (git-ignored)
 ```
 
-With the extension, the browser will render the JSON with indentation, color-coding, and collapsible sections.
+## Prerequisites
 
-```json
-{
-  "id": 1,
-  "name": "Alice"
-}
-```
+- [uv](https://docs.astral.sh/uv/) for dependency and environment management
+- Python 3.13+ (`1_rent-a-room` requires 3.14+; each project's `requires-python` is authoritative)
 
-## Working Through the Course
+## Running a Project
 
-Every top-level folder in this repo contains a separate project.
+Every subproject is run the same way:
 
-Each project has a list of dependencies which you can find within `pyproject.toml`. A dependency is a library (a bundle of developer code) that the project depends in order to be able to run. Dependencies need to be downloaded to your computer.
-
-The video course proceeds through the projects in the following order:
-
-- [`rent-a-room/`](rent-a-room) — FastAPI project inspired by AirBnB (Sections 1-10)
-- [`database-management/`](database-management) — Database migrations with Alembic (Section 11)
-- [`authentication/`](authentication) — Authentication and authorization (Sections 12-13)
-
-### Install uv
-
-I recommend installing `uv`, a command-line tool for managing Python projects, virtual environments, and dependencies. `uv` has a simple `uv sync` command that installs Python and downloads all dependencies for any project with a `pyproject.toml` file.
-
-If you are familiar with the Python ecosystem and prefer to use an alternate Python manager (`pip`, `poetry`, etc), you are welcome to do so. See each project's `pyproject.toml` file for a list of dependencies.
-
-You can fidn the `uv` setup instructions below. The course videos can also walk you through setting up `uv` step-by-step.
-
-#### macOS uv Setup
-
-Execute the following commands in Terminal to install `uv` and enable command auto-completion. The final two commands (auto-completion) are optional but recommended.
-
-```sh
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-echo 'eval "$(uv generate-shell-completion zsh)"' >> ~/.zshrc
-
-echo 'eval "$(uvx --generate-shell-completion zsh)"' >> ~/.zshrc
-```
-
-Verify installation with `uv --version`. You should see a version number like:
-
-```sh
-uv --version
-uv 0.11.26 (396ef7ce4 2026-06-30 aarch64-pc-windows-msvc)
-```
-
-See https://docs.astral.sh/uv/getting-started/installation/ for the `uv` installation documentation.
-
-#### Windows uv Setup
-
-Execute the following commands in PowerShell to install `uv` and enable command auto-completion. The final two commands (auto-completion) are optional but recommended.
-
-```shell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-if (!(Test-Path -Path $PROFILE)) {
-  New-Item -ItemType File -Path $PROFILE -Force
-}
-Add-Content -Path $PROFILE -Value '(& uv generate-shell-completion powershell) | Out-String | Invoke-Expression'
-
-if (!(Test-Path -Path $PROFILE)) {
-  New-Item -ItemType File -Path $PROFILE -Force
-}
-Add-Content -Path $PROFILE -Value '(& uvx --generate-shell-completion powershell) | Out-String | Invoke-Expression'
-```
-
-Verify installation with `uv --version`. You should see a version number like:
-
-```shell
-uv --version
-uv 0.11.26 (396ef7ce4 2026-06-30 aarch64-apple-darwin)
-```
-
-See https://docs.astral.sh/uv/getting-started/installation/ for the `uv` installation documentation.
-
-### Work on a course project
-
-1. Navigate into a sample project from the Terminal.
-
-```sh
-cd rent-a-room
-```
-
-2. Execute `uv sync` to setup a virtual environment with the project's version of Python and all of the project's dependencies/libraries. `uv` will automatically download any dependencies that are not locally available on the computer.
-
-```sh
+```bash
+cd <project-folder>
 uv sync
-
-Using CPython 3.14.6
-Creating virtual environment at: .venv
-Resolved 53 packages in 14ms
-Prepared 51 packages in 2.80s
-Installed 51 packages in 63ms
- + aiosqlite==0.22.1
- + alembic==1.18.5
-#...
+uv run fastapi dev main.py
 ```
 
-3. Open the project in VSCode with `code .`. Alternatively, you can open the project's folder in VSCode by clicking `File > Open Folder`. Make sure to open a specific project to ensure VSCode picks up that project's virtual environment automatically. If you open the top-level `fast-api-masterclass` folder, VSCode will NOT be able to correctly identify the virtual environment.
+Then open `http://localhost:8000/docs` for the interactive Swagger UI (`/redoc` for ReDoc).
 
-4. A project has a `.vscode/extensions.json` file with recommended VSCode extensions to install. If you do not have the extensions, a pop-up will appear when you first open the project. Click the button to download all recommended VSCode extensions.
+---
 
-## Project Dependencies
+## 1. Rent-A-Room (`1_rent-a-room/`)
 
-Each project's `pyproject.toml` file lists its dependencies under `[project.dependencies]`. FastAPI needs these dependencies for the project to run.
+The main course project: an API for browsing and booking rooms. It covers the core FastAPI topics from the first ten course sections.
 
-Here's a complete list of libraries we use throughout the course:
+**Stack:** FastAPI, SQLModel, SQLite (`dev.db`, git-ignored), Pydantic v2, Alembic, aiosqlite, Ruff.
 
-- **fastapi** — a Python micro-framework for building APIs/web servers
-- **pydantic** — a library for data validation and transformation
-- **sqlalchemy** - an ORM (object-relational mapper) for using Python to communicate with databases
-- **sqlmodel** — a new ORM from the developers of FastAPI that combines Pydantic and SQLAlchemy for database models and queries
-- **alembic** — a tool for generating and running database migrations (updates to the database schema)
-- **pydantic-settings** — a Pydantic expansion that loads environment variables from a `.env` file
-- **pydantic-extra-types** — a Pydantic expansion that adds validation for extra field types like phone numbers
-- **pwdlib** — a password hashing algorithm that converts a plain-text password into a hash
-- **pyjwt** — a library for encoding and decoding JSON Web Tokens (JWTs)
-- **aiosqlite** — an async SQLite driver to add support for async database calls
-- **greenlet** — a dependency that SQLAlchemy/SQLModel needs to add support for async database calls
+**Files**
 
-## Developer Dependencies
+| File | Purpose |
+|------|---------|
+| `main.py` | App setup (lifespan, metadata, tags), static file mount and routes |
+| `models.py` | `Room` table model plus Pydantic models for cookies, headers and query params |
+| `database.py` | SQLite engine, table creation, `SessionDependency` |
+| `annotated.py` | Scratch script showing how `Annotated` metadata works |
+| `assets/` | Static files served under `/assets` |
 
-`Ruff` is a developer dependency in every project. A developer dependency is a library that exists for the benefit of the developer rather than the end user. A FastAPI project does not need developer dependencies to run correctly.
+**Endpoints**
 
-Ruff is a formatter that formats code in a consistent, aesthetically pleasing standard. It is made by the same team as `uv`.
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/` | Localised greeting from the `language` cookie, plus the `User-Agent` header and a DB check |
+| GET | `/rooms` | List all rooms |
+| GET | `/rooms/search` | Search by name (`search`, 3-10 chars) with an optional `max_price` filter |
+| GET | `/rooms/faq` | Check-in and check-out FAQ |
+| GET | `/rooms/{id}` | Get one room, 404 if it doesn't exist |
+| GET | `/preferences` | Sets the `theme` and `language` cookies |
+| GET | `/example` | Dependency injection demo |
 
-You can find developer dependencies in `pyproject.toml` in a dedicated section.
+**Concepts practised:** path and query parameters, Pydantic query/cookie/header models, `Annotated` types, custom validators, static files, lifespan events, dependencies, and SQLModel sessions.
 
-I configured VSCode settings to run Ruff automatically on save. See any project's `.vscode/settings.json` for the setup.
+## 2. Authentication (`2_authentication/`)
 
-### Before/After Example
+Starting point for the authentication section (JWTs, password handling and so on). So far it has:
 
-Before Ruff formatting:
+- `main.py`: FastAPI app with a lifespan hook and a `GET /` health route
+- `database.py`: SQLite engine (`auth.db`), table creation and a `SessionDep` dependency
 
-```python
-import sys
-import os
-from fastapi import FastAPI
+Auth models and routes are still to be added.
 
-app=FastAPI()
-@app.get('/users')
-def get_users():
-    return{"name":"Alice"}
-```
+## 3. Database Management (`3_database-management/`)
 
-After Ruff formatting:
+A small sandbox for practising **database migrations with Alembic**.
 
-```python
-import os
-import sys
+- `models.py`: a `Movie` table (`id`, `title`, `in_theaters`) with a SQLAlchemy naming convention, so constraint names stay stable across migrations
+- `database.py`: SQLite engine (`movies.db`)
 
-from fastapi import FastAPI
+Dependencies: `sqlmodel`, `alembic`.
 
-app = FastAPI()
+---
 
+## 4. Other Projects (`4_other_projects/`)
 
-@app.get("/users")
-def get_users():
-    return {"name": "Alice"}
-```
+Small standalone APIs used to practise the fundamentals.
 
-Ruff grouped and sorted the imports (standard library first, then third-party), added the missing spacing around `=` and after `return`, switched single quotes to double quotes, and inserted the blank lines Python convention expects around a function definition.
+### BurgerPoint
+
+A burger menu API backed by an in-memory list (`data.py`).
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/` | Welcome message |
+| GET | `/burgers` | Full menu |
+| GET | `/burgers/search?category=` | Filter by category (case-insensitive), 404 if none match |
+| GET | `/burgers/{id}` | Get one item |
+
+Practises: query and path parameters, `HTTPException`, response models.
+
+### PincodeLookup
+
+Looks up Indian postal codes (city, district, state), singly or in bulk (up to 20). It has custom exceptions with JSON error handlers and Pydantic validation, and uses an in-memory dataset of 12 pincodes. See [`4_other_projects/PincodeLookup/README.md`](4_other_projects/PincodeLookup/README.md) for the full API reference.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/pincode/{code}` | Single lookup (400 for bad format, 404 if not found) |
+| POST | `/pincode/bulk` | Bulk lookup with `found`, `not_found` and `missing` reporting |
+
+### TheatreReviews
+
+Just scaffolded (a `main.py` stub and dependencies: FastAPI, Uvicorn, Ruff). No routes yet.
+
+---
+
+## Learning Path
+
+The course sections map onto the projects roughly like this:
+
+| Course sections | Where it lives |
+|-----------------|----------------|
+| Servers, routes, path/query parameters, cookies and headers | `1_rent-a-room`, `BurgerPoint`, `PincodeLookup` |
+| Databases and ORMs, database operations, app organization | `1_rent-a-room` |
+| Async operations, database relationships | `1_rent-a-room` |
+| Database management (migrations) | `3_database-management` |
+| Authentication and authorization | `2_authentication` |
+
+## Notes
+
+- `*.db` files, `.venv`, `.env` and `slide-decks/` are git-ignored.
+- Custom exception handling is practised in `PincodeLookup`.
+- Subproject READMEs other than `PincodeLookup` are empty placeholders.
