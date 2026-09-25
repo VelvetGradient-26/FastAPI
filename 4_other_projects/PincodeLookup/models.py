@@ -1,17 +1,6 @@
 from pydantic import BaseModel, field_validator
 
 
-class PincodeReqeust(BaseModel): 
-    pincode: str
-
-    # pincode must be exactly 6 digits
-    @field_validator("pincode")
-    @classmethod
-    def validate_pincode(cls, value): 
-        if len(value) != 6 or not value.isdigit(): 
-            raise ValueError("Pincode must be exactly 6 digit")
-        return value
-
 class LocationResponse(BaseModel): 
     pincode: str
     city: str
@@ -32,6 +21,7 @@ class BulkPincodeRequest(BaseModel):
         for code in values: 
             if len(code) != 6 or not code.isdigit(): 
                 raise ValueError("Pincode must be exactly 6 digit")
+        return values
 
 class BulkResponse(BaseModel): 
     status: str = "success"

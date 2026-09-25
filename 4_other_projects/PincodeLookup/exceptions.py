@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 class PinCodeNotFoundError(Exception): 
     def __init__(self, pincode: str):
         self.pincode = pincode
-        self.reason =  f"Pincode {self.pincode}does not exist in database. If you think this is an app error, contact the developers"
+        self.reason = f"Pincode {self.pincode} does not exist in database. If you think this is an app error, contact the developers"
 
 class InvalidPinCodeError(Exception): 
     def __init__(self, pincode: str):
@@ -25,7 +25,7 @@ async def pincode_not_found_handler(request: Request, exec: PinCodeNotFoundError
 
 async def invalid_pincode_handler(request: Request, exec: InvalidPinCodeError): 
     return JSONResponse(
-        status_code=404, 
+        status_code=400, 
         content={
             "error": "invalid_pincode_error", 
             "message": exec.reason,
