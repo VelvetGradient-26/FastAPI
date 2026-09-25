@@ -26,6 +26,6 @@ def get_burgers_by_categories(category: str | None = Query(default=None)):
 def get_burgers_by_id(id: int): 
     for burger in burgers: 
         if burger['id'] == id: 
-            return BurgerResponse(count=1, item=burger)
+            return BurgerResponse(count=1, items=[burger])
     raise HTTPException(status_code=404, detail="Item ID does not exist in the menu")
     
